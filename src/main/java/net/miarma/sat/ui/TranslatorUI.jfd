@@ -1,0 +1,82 @@
+JFDML JFormDesigner: "8.2.3.0.386" Java: "23.0.2" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+			"$layoutConstraints": "hidemode 3"
+			"$columnConstraints": "[grow,fill]"
+			"$rowConstraints": "[grow,fill]"
+		} ) {
+			name: "this"
+			"$sizePolicy": 1
+			"title": "SAT"
+			"defaultCloseOperation": 3
+			"minimumSize": new java.awt.Dimension( 450, 300 )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+				"$layoutConstraints": "insets 0,hidemode 3"
+				"$columnConstraints": "[grow,fill]"
+				"$rowConstraints": "[grow,fill][fill]"
+			} ) {
+				name: "mainPanel"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "insets 0,hidemode 3"
+					"$columnConstraints": "[grow,fill][grow,fill]"
+					"$rowConstraints": "[grow,fill]"
+				} ) {
+					name: "textsPanel"
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "textScrollPane"
+						add( new FormComponent( "javax.swing.JTextArea" ) {
+							name: "textArea"
+							"font": &Font0 new java.awt.Font( "Liberation Mono", 0, 24 )
+							"lineWrap": true
+							"wrapStyleWord": true
+						} )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 0"
+					} )
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "binaryScrollPane"
+						add( new FormComponent( "javax.swing.JTextArea" ) {
+							name: "binaryArea"
+							"font": #Font0
+							"lineWrap": true
+							"wrapStyleWord": true
+						} )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 0"
+					} )
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 0"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "insets 0,hidemode 3"
+					"$columnConstraints": "[grow,fill][grow,fill]"
+					"$rowConstraints": "[grow,fill]"
+				} ) {
+					name: "buttonsPanel"
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "copyButton"
+						"text": "COPY"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 0,height 48:48:48"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "clearButton"
+						"text": "CLEAR"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 0,height 48:48:48"
+					} )
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 1"
+				} )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 0"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 900, 600 )
+		} )
+	}
+}
