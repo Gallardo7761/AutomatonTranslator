@@ -4,11 +4,7 @@ import java.nio.charset.StandardCharsets;
 
 public class TextBinaryConverter {
 
-    /**
-     * Convierte texto a binario UTF-8.
-     * @param text Texto de entrada
-     * @return Cadena binaria separada por espacios
-     */
+    // Convierte texto a binario UTF-8
     public static String textToBinary(String text) {
         byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
         StringBuilder binario = new StringBuilder();
@@ -18,14 +14,9 @@ public class TextBinaryConverter {
         return binario.toString().trim();
     }
 
-    /**
-     * Convierte binario UTF-8 (separado por espacios) a texto.
-     * @param binaryInput Cadena binaria
-     * @return Texto plano
-     * @throws IllegalArgumentException si hay binarios inválidos
-     */
+    // Convierte binario UTF-8 a texto
     public static String binaryToText(String binaryInput) {
-        String cleaned = binaryInput.trim().replaceAll("\\s+", ""); // Eliminamos espacios
+        String cleaned = binaryInput.trim().replaceAll("\\s+", "");
         if (cleaned.length() % 8 != 0) {
             throw new IllegalArgumentException("La longitud del binario debe ser múltiplo de 8.");
         }
@@ -44,42 +35,41 @@ public class TextBinaryConverter {
         return new String(bytes, StandardCharsets.UTF_8);
     }
 
+    // Convierte texto a hexadecimal
+    public static String textToHexadecimal(String text) {
+        byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
+        StringBuilder hexadecimal = new StringBuilder();
+        for (byte b : bytes) {
+            hexadecimal.append(String.format("%02X ", b));
+        }
+        return hexadecimal.toString().trim();
+    }
 
-    /**
-     * Detección automática: si contiene solo 1s, 0s y espacios, asume binario.
-     * @param input Entrada ambigua
-     * @return Texto si era binario, binario si era texto
-     */
+    // Convierte hexadecimal a texto
+    public static String hexadecimalToText(String hexInput) {
+        String cleaned = hexInput.trim().replaceAll("\\s+", "");
+        if (cleaned.length() % 2 != 0) {
+            throw new IllegalArgumentException("La longitud del hexadecimal debe ser múltiplo de 2.");
+        }
+
+        byte[] bytes = new byte[cleaned.length() / 2];
+        for (int i = 0; i < bytes.length; i++) {
+            int index = i * 2;
+            bytes[i] = (byte) Integer.parseInt(cleaned.substring(index, index + 2), 16);
+        }
+
+        return new String(bytes, StandardCharsets.UTF_8);
+    }
+
+    // Detecta automáticamente el formato y convierte
     public static String autoConvert(String input) {
-        String cleaned = input.trim();
-        if (cleaned.matches("([01]{8}\\s*)+")) {
-            return binaryToText(cleaned);
+        String cleaned = input.trim().replaceAll("\\s+", "");
+        if (cleaned.matches("([01]{8})+")) {  // Detecta binario
+            return binaryToText(input);
+        } else if (cleaned.matches("([0-9A-Fa-f]{2})+")) {  // Detecta hexadecimal
+            return hexadecimalToText(input);
         } else {
-            return textToBinary(cleaned);
+            return textToBinary(input);  // Asume que es texto y lo convierte a binario
         }
-    }
-
-    /**
-     * Cifra texto con cifrado César.
-     * @param text Texto original
-     * @param shift Desplazamiento
-     * @return Texto cifrado
-     */
-    public static String caesarEncrypt(String text, int shift) {
-        StringBuilder resultado = new StringBuilder();
-        for (char c : text.toCharArray()) {
-            resultado.append((char) (c + shift));
-        }
-        return resultado.toString();
-    }
-
-    /**
-     * Descifra texto cifrado con César.
-     * @param text Texto cifrado
-     * @param shift Desplazamiento original
-     * @return Texto descifrado
-     */
-    public static String caesarDecrypt(String text, int shift) {
-        return caesarEncrypt(text, -shift);
     }
 }
