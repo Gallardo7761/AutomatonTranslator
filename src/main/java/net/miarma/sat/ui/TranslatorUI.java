@@ -171,17 +171,25 @@ public class TranslatorUI extends JFrame {
 	        try {
 	            FileManager fileManager = new FileManager(dialog.getDirectory() + filename);
 	            String content = fileManager.readAsString();
+	            String firstLine = content.split("\n")[0].trim();
 	            
-	            if (content.matches("^[01 ]+$")) {
-	                binaryArea.setText(content);
+	            if (firstLine.matches("[01 ]+")) {
 	                currentFormat = "BINARY";
-	            } else if (content.matches("^[0-9A-Fa-f ]+$")) {
 	                binaryArea.setText(content);
+	                textArea.setText(TextBinaryConverter.binaryToText(content));
+	            } else if (firstLine.matches("[0-9A-Fa-f ]+")) {
 	                currentFormat = "HEXADECIMAL";
+	                binaryArea.setText(content);
+	                textArea.setText(TextBinaryConverter.hexadecimalToText(content));
 	            } else {
 	                textArea.setText(content);
-	                currentFormat = "TEXT";
-	            }
+	                if("BINARY".equals(currentFormat)) {
+	                    binaryArea.setText(TextBinaryConverter.textToBinary(content));
+	                } else {
+	                    binaryArea.setText(TextBinaryConverter.textToHexadecimal(content));
+	                }
+                }
+	            
 	        } catch (IOException e1) {
 	            Constants.LOGGER.error("Error reading file", e1);
 	        }
