@@ -5,9 +5,16 @@
 package net.miarma.sat.ui;
 
 import java.awt.Dimension;
+import java.awt.FileDialog;
 import java.awt.Font;
 import java.awt.KeyboardFocusManager;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -23,6 +30,7 @@ import javax.swing.event.DocumentListener;
 
 import net.miarma.sat.common.AboutDialog;
 import net.miarma.sat.common.Constants;
+import net.miarma.sat.common.ControlsDialog;
 import net.miarma.sat.common.KeySequenceDispatcher;
 import net.miarma.sat.common.TextBinaryConverter;
 import net.miginfocom.swing.MigLayout;
@@ -91,6 +99,7 @@ public class TranslatorUI extends JFrame {
     }
 	
 	private void addListeners() {
+		
 		textArea.getDocument().addDocumentListener(new DocumentListener() {
 	        public void insertUpdate(DocumentEvent e) { translate(); }
 	        public void removeUpdate(DocumentEvent e) { translate(); }
@@ -155,38 +164,73 @@ public class TranslatorUI extends JFrame {
 	}
 
 	private void open(ActionEvent e) {
-		// TODO add your code here
+	    FileDialog dialog = new FileDialog(this, "Open", FileDialog.LOAD);
+	    dialog.setVisible(true);
+	    String filename = dialog.getFile();
+	    if (filename != null) {
+	        try {
+	            FileManager fileManager = new FileManager(dialog.getDirectory() + filename);
+	            String content = fileManager.readAsString();
+	            
+	            if (content.matches("^[01 ]+$")) {
+	                binaryArea.setText(content);
+	                currentFormat = "BINARY";
+	            } else if (content.matches("^[0-9A-Fa-f ]+$")) {
+	                binaryArea.setText(content);
+	                currentFormat = "HEXADECIMAL";
+	            } else {
+	                textArea.setText(content);
+	                currentFormat = "TEXT";
+	            }
+	        } catch (IOException e1) {
+	            Constants.LOGGER.error("Error reading file", e1);
+	        }
+	    }
 	}
+
 
 	private void close(ActionEvent e) {
 		System.exit(0);
 	}
 
 	private void copy(ActionEvent e) {
-	    if (textArea.requestFocusInWindow()) {
-	        textArea.copy();
-	    } else if (binaryArea.requestFocusInWindow()) {
-	        binaryArea.copy();
+	    JTextArea activeArea = textArea.isFocusOwner() ? textArea : binaryArea.isFocusOwner() ? binaryArea : null;
+	    if (activeArea != null) {
+	        String text = activeArea.getText();
+	        StringSelection selection = new StringSelection(text);
+	        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+	        clipboard.setContents(selection, null);
 	    }
 	}
 
 	private void cut(ActionEvent e) {
-	    if (textArea.requestFocusInWindow()) {
-	        textArea.cut();
-	    } else if (binaryArea.requestFocusInWindow()) {
-	        binaryArea.cut();
+	    JTextArea activeArea = textArea.isFocusOwner() ? textArea : binaryArea.isFocusOwner() ? binaryArea : null;
+	    if (activeArea != null) {
+	        String text = activeArea.getText();
+	        StringSelection selection = new StringSelection(text);
+	        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+	        clipboard.setContents(selection, null);
+	        activeArea.setText("");
 	    }
 	}
 
 	private void paste(ActionEvent e) {
-	    if (textArea.requestFocusInWindow()) {
-	        textArea.paste();
-	    } else if (binaryArea.requestFocusInWindow()) {
-	        binaryArea.paste();
+	    JTextArea activeArea = textArea.isFocusOwner() ? textArea : binaryArea.isFocusOwner() ? binaryArea : null;
+	    if (activeArea != null) {
+	        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+	        try {
+	            if (clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
+	                String text = (String) clipboard.getData(DataFlavor.stringFlavor);
+	                activeArea.setText(text);
+	            }
+	        } catch (UnsupportedFlavorException | IOException ex) {
+	            Constants.LOGGER.error("Error pasting text", ex);
+	        }
 	    }
 	}
 
 	private void clear(ActionEvent e) {
+		binaryArea.setText("");
 	    textArea.setText("");
 	    binaryArea.setText("");
 	}
@@ -205,9 +249,10 @@ public class TranslatorUI extends JFrame {
         binaryArea.setText(hex);
     }
 
-	private void controls(ActionEvent e) {
-		// TODO add your code here
-	}
+    public void controls(ActionEvent e) {
+        ControlsDialog dialog = new ControlsDialog(this);
+        dialog.setVisible(true);
+    }
 
 	private void about(ActionEvent e) {
 		AboutDialog dialog = new AboutDialog(this);

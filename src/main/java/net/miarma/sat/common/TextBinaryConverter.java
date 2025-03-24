@@ -4,7 +4,6 @@ import java.nio.charset.StandardCharsets;
 
 public class TextBinaryConverter {
 
-    // Convierte texto a binario UTF-8
     public static String textToBinary(String text) {
         byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
         StringBuilder binario = new StringBuilder();
@@ -14,11 +13,10 @@ public class TextBinaryConverter {
         return binario.toString().trim();
     }
 
-    // Convierte binario UTF-8 a texto
     public static String binaryToText(String binaryInput) {
         String cleaned = binaryInput.trim().replaceAll("\\s+", "");
         if (cleaned.length() % 8 != 0) {
-            throw new IllegalArgumentException("La longitud del binario debe ser múltiplo de 8.");
+            throw new IllegalArgumentException("Binary sequence length must be a multiple of 8");
         }
 
         int bloques = cleaned.length() / 8;
@@ -27,7 +25,7 @@ public class TextBinaryConverter {
         for (int i = 0; i < bloques; i++) {
             String byteStr = cleaned.substring(i * 8, (i + 1) * 8);
             if (!byteStr.matches("[01]{8}")) {
-                throw new IllegalArgumentException("Secuencia binaria inválida: " + byteStr);
+                throw new IllegalArgumentException("Invalid binary sequence: " + byteStr);
             }
             bytes[i] = (byte) Integer.parseInt(byteStr, 2);
         }
@@ -35,7 +33,6 @@ public class TextBinaryConverter {
         return new String(bytes, StandardCharsets.UTF_8);
     }
 
-    // Convierte texto a hexadecimal
     public static String textToHexadecimal(String text) {
         byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
         StringBuilder hexadecimal = new StringBuilder();
@@ -45,11 +42,10 @@ public class TextBinaryConverter {
         return hexadecimal.toString().trim();
     }
 
-    // Convierte hexadecimal a texto
     public static String hexadecimalToText(String hexInput) {
         String cleaned = hexInput.trim().replaceAll("\\s+", "");
         if (cleaned.length() % 2 != 0) {
-            throw new IllegalArgumentException("La longitud del hexadecimal debe ser múltiplo de 2.");
+            throw new IllegalArgumentException("Hexadecimal sequence length must be a multiple of 2");
         }
 
         byte[] bytes = new byte[cleaned.length() / 2];
@@ -61,15 +57,14 @@ public class TextBinaryConverter {
         return new String(bytes, StandardCharsets.UTF_8);
     }
 
-    // Detecta automáticamente el formato y convierte
     public static String autoConvert(String input) {
         String cleaned = input.trim().replaceAll("\\s+", "");
-        if (cleaned.matches("([01]{8})+")) {  // Detecta binario
+        if (cleaned.matches("([01]{8})+")) { 
             return binaryToText(input);
-        } else if (cleaned.matches("([0-9A-Fa-f]{2})+")) {  // Detecta hexadecimal
+        } else if (cleaned.matches("([0-9A-Fa-f]{2})+")) {  
             return hexadecimalToText(input);
         } else {
-            return textToBinary(input);  // Asume que es texto y lo convierte a binario
+            return textToBinary(input); 
         }
     }
 }
