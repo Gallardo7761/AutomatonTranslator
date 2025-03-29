@@ -107,7 +107,7 @@
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>net.miarma.automatontranslator.AutomatonTranslator</mainClass>
+                                    <mainClass>net.miarma.sat.AutomatonTranslator</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
